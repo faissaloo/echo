@@ -6,9 +6,25 @@ _start:
     pop	ebx	        ; Pop the program name, we don't need this so we'll just overwrite it
     pop	ebx		      ; Get the first argument
 
+    cmp eax, 2 ;if there are two arguments skip to the bit of code that checks if the first argument is -n
+    jne _twoargs
+    jmp _main
+_twoargs:
+    ;compare ebx with '-n' to see if they're the same
+    cld
+    mov  ecx,2 ;'-n' will always be 2 characters long
+    lea  esi,[nlarg]
+    lea  edi, [ebx]
+    repe cmpsb
+    je _removenl ;If they are equal remove the newline
+    jmp _main
+_removenl:
+    mov dword [newline],0 ;Removes the newline character from memory
+    pop	ebx		      ;Skips to the next argument
+    jmp _main
+_main:
     cmp eax, 1      ;If there is only one argument do nothing, just skip to the end
     je _exit
-
     ;strlen(edi)
     mov edi, ebx
     call _strlen
@@ -20,6 +36,7 @@ _start:
     mov eax,4       ;sys_write
     int 0x80        ;Kernel interrupt
     jmp _exit
+
 
 _exit:
     ;Print new line
@@ -52,3 +69,4 @@ _strlen:
 
 section .data
   newline DB 0xA
+  nlarg DB "-n",0
