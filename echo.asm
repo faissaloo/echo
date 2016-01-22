@@ -2,16 +2,15 @@ global _start
 section .text
 
 _start:
-    pop	eax	        ; Get the number of arguments
+    pop	ebp	        ; Get the number of arguments
     pop	ebx	        ; Pop the program name, we don't need this so we'll just overwrite it
-    pop	ebx		      ; Get the first argument
 
-    cmp eax, 1      ;If there is only one argument do nothing, just skip to the end
+    dec ebp
+    cmp ebp, 0
     je _exit
-    cmp eax, 2 ;if there are two arguments skip to the bit of code that checks if the first argument is -n
-    jne _twoargs
-    jmp _main
+    jmp _twoargs
 _twoargs:
+    pop	ebx		      ; Get argument
     ;compare ebx with '-n' to see if they're the same
     cld
     mov  ecx,2 ;'-n' will always be 2 characters long
@@ -23,11 +22,16 @@ _twoargs:
 _removenl:
     mov dword [newline],0 ;Removes the newline character from memory
     pop	ebx		      ;Skips to the next argument
+    dec ebp         ;decrease the number of arguments left
+    jmp _main
+_nextarg:
+    pop	ebx		      ; Get argument
     jmp _main
 _main:
-    cmp eax, 1      ;If there is only one argument do nothing, just skip to the end
+    cmp ebp, 0      ;If there is only one argument do nothing, just skip to the end
     je _exit
     ;strlen(edi)
+    dec ebp         ;decrease the number of arguments left
     mov edi, ebx
     call _strlen
 
@@ -37,6 +41,9 @@ _main:
     mov ebx,1       ;stdout
     mov eax,4       ;sys_write
     int 0x80        ;Kernel interrupt
+    cmp ebp,0;Here we need to add a conditional to check if either the stack is empty or we've processed all arguments
+    jne _nextarg
+    ;Otherwise exit
     jmp _exit
 
 
@@ -72,3 +79,4 @@ _strlen:
 section .data
   newline DB 0xA
   nlarg DB "-n",0
+  space DB " ",0
