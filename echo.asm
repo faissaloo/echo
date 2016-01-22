@@ -6,8 +6,10 @@ _start:
     pop	ebx	        ; Pop the program name, we don't need this so we'll just overwrite it
     pop	ebx		      ; Get the first argument
 
+    cmp eax, 1      ;If there is only one argument do nothing, just skip to the end
+    je _exit
     cmp eax, 2 ;if there are two arguments skip to the bit of code that checks if the first argument is -n
-    je _twoargs
+    jne _twoargs
     jmp _main
 _twoargs:
     ;compare ebx with '-n' to see if they're the same
