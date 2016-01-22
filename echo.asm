@@ -7,7 +7,7 @@ _start:
     pop	ebx		      ; Get the first argument
 
     cmp eax, 2 ;if there are two arguments skip to the bit of code that checks if the first argument is -n
-    jne _twoargs
+    je _twoargs
     jmp _main
 _twoargs:
     ;compare ebx with '-n' to see if they're the same
