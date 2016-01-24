@@ -25,6 +25,12 @@ _removenl:
     dec ebp         ;decrease the number of arguments left
     jmp _main
 _nextarg:
+    mov edx,1
+    mov ecx,space   ;empty space
+    mov ebx,1       ;stdout
+    mov eax,4       ;sys_write
+    int 0x80        ;Kernel interrupt
+
     pop	ebx		      ; Get argument
     jmp _main
 _main:
