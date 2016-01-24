@@ -20,7 +20,7 @@ _twoargs:
     je _removenl ;If they are equal remove the newline
     jmp _main
 _removenl:
-    mov dword [newline],0 ;Removes the newline character from memory
+    mov byte [newline],0 ;Removes the newline character from memory
     pop	ebx		      ;Skips to the next argument
     dec ebp         ;decrease the number of arguments left
     jmp _main
@@ -37,7 +37,7 @@ _main:
     cmp ebp, 0      ;If there is only one argument do nothing, just skip to the end
     je _exit
     ;strlen(edi)
-    dec ebp         ;decrease the number of arguments left
+    dec ebp        ;decrease the number of arguments left
     mov edi, ebx
     call _strlen
 
@@ -63,7 +63,7 @@ _exit:
 
     ;Exit with code 0
     mov eax, 1
-    mov ebx, 0
+    xor ebx, ebx
     int 80h
 
 ;call strlen
@@ -71,10 +71,10 @@ _exit:
 ;Returns eax (the length of the string)
 _strlen:
   	push	edi
-  	sub	ecx, ecx
+  	xor	ecx, ecx
   	mov	edi, [esp]
   	not	ecx
-  	sub	al, al
+  	xor	al, al
   	cld
     repne scasb
   	not	ecx
@@ -84,5 +84,5 @@ _strlen:
 
 section .data
   newline DB 0xA
-  nlarg DB "-n",0
-  space DB " ",0
+  nlarg DB "-n"
+  space DB " "
