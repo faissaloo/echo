@@ -64,7 +64,7 @@ _exit:
     ;Exit with code 0
     mov eax, 1
     xor ebx, ebx
-    int 80h
+    int 0x80
 
 ;call strlen
 ;Takes edi (the starting address of the string)
