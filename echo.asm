@@ -8,8 +8,6 @@ _start:
     dec ebp
     cmp ebp, 0      ; If there are no arguments just exit
     je _exit
-    jmp _twoargs
-_twoargs:
     pop	ebx		      ; Get argument
     ;compare ebx with '-n' to see if they're the same
     cld
