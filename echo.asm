@@ -24,15 +24,6 @@ _removenl:
     pop	ebx		      ;Skips to the next argument
     dec ebp         ;decrease the number of arguments left
     jmp _main
-_nextarg:
-    mov edx,1
-    mov ecx,space   ;empty space
-    mov ebx,1       ;stdout
-    mov eax,4       ;sys_write
-    int 0x80        ;Kernel interrupt
-
-    pop	ebx		      ; Get argument
-    jmp _main
 _main:
     cmp ebp, 0      ;If there is only one argument do nothing, just skip to the end
     je _exit
@@ -47,10 +38,17 @@ _main:
     mov ebx,1       ;stdout
     mov eax,4       ;sys_write
     int 0x80        ;Kernel interrupt
-    cmp ebp,0;Here we need to add a conditional to check if either the stack is empty or we've processed all arguments
-    jne _nextarg
-    ;Otherwise exit
-    jmp _exit
+    cmp ebp,0       ;Here we need to add a conditional to check if either the stack is empty or we've processed all arguments
+    je _exit        ;If this is the last argument exit
+
+    mov edx,1
+    mov ecx,space   ;empty space
+    mov ebx,1       ;stdout
+    mov eax,4       ;sys_write
+    int 0x80        ;Kernel interrupt
+
+    pop	ebx		      ; Get argument
+    jmp _main
 
 
 _exit:
