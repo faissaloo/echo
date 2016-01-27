@@ -27,7 +27,17 @@ _main:
     ;strlen(edi)
     dec ebp         ; Decrease the number of arguments left
     mov edi, ebx
-    call _strlen
+    ;Get the string length for string edi and put it in eax
+    push	edi
+  	xor	ecx, ecx
+  	mov	edi, [esp]
+  	not	ecx
+  	xor	al, al
+  	cld
+    repne scasb
+  	not	ecx
+  	pop	edi
+  	lea	eax, [ecx-1]
 
     ;Print the string
     mov edx,eax     ; String length
@@ -60,22 +70,6 @@ _exit:
     mov eax, 1
     xor ebx, ebx
     int 0x80
-
-;call strlen
-;Takes edi (the starting address of the string)
-;Returns eax (the length of the string)
-_strlen:
-  	push	edi
-  	xor	ecx, ecx
-  	mov	edi, [esp]
-  	not	ecx
-  	xor	al, al
-  	cld
-    repne scasb
-  	not	ecx
-  	pop	edi
-  	lea	eax, [ecx-1]
-  	ret
 
 section .data
   newline DB 0xA
