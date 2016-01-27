@@ -5,8 +5,7 @@ _start:
     pop	ebp	        ; Get the number of arguments
     pop	ebx	        ; Pop the program name, we don't need this so we'll just overwrite it
 
-    dec ebp
-    cmp ebp, 0      ; If there are no arguments just exit
+    cmp ebp, 1      ; If there are no arguments just exit
     je _exit
     pop	ebx		      ; Get argument
     ;compare ebx with '-n' to see if they're the same
@@ -23,7 +22,7 @@ _removenl:
     dec ebp         ; decrease the number of arguments left
     jmp _main
 _main:
-    cmp ebp, 0      ; If there is only one argument do nothing, just skip to the end
+    cmp ebp, 1      ; If there is only one argument do nothing, just skip to the end
     je _exit
     ;strlen(edi)
     dec ebp         ; Decrease the number of arguments left
@@ -36,7 +35,7 @@ _main:
     mov ebx,1       ; stdout
     mov eax,4       ; sys_write
     int 0x80        ; Kernel interrupt
-    cmp ebp,0       ; Here we need to add a conditional to check if either the stack is empty or we've processed all arguments
+    cmp ebp,1       ; Here we need to add a conditional to check if either the stack is empty or we've processed all arguments
     je _exit        ; If this is the last argument exit
 
     mov edx,1
