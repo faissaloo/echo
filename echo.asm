@@ -14,8 +14,7 @@ _start:
     lea  esi,[nlarg]
     lea  edi, [ebx]
     repe cmpsb
-    je _removenl    ;If they are equal remove the newline
-    jmp _main
+    jne _main
 _removenl:
     mov byte [newline],0 ;Removes the newline character from memory
     pop	ebx		      ; Skips to the next argument
