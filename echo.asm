@@ -20,7 +20,7 @@ _removenl:
     mov byte [newline],0 ;Removes the newline character from memory
     pop	ebx		      ; Skips to the next argument
     dec ebp         ; decrease the number of arguments left
-    jmp _main
+
 _main:
     cmp ebp, 1      ; If there is only one argument do nothing, just skip to the end
     je _exit
