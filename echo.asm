@@ -17,10 +17,9 @@ _start:
     jne _main
 _removenl:
     mov edx,0 ;Removes the newline character from memory
-    pop	ebx		      ; Skips to the next argument
-    dec esi         ; decrease the number of arguments left
+    dec esi
     jz _exit
-
+    pop ebx
 _main:
     ;strlen(edi)
     mov edi, ebx
