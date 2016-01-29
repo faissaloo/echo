@@ -2,10 +2,10 @@ global _start
 section .text
 
 _start:
-    pop	ebp	        ; Get the number of arguments
+    pop	esi	        ; Get the number of arguments
     pop	ebx	        ; Pop the program name, we don't need this so we'll just overwrite it
 
-    cmp ebp, 1      ; If there are no arguments just exit
+    cmp esi, 1      ; If there are no arguments just exit
     je _exit
     pop	ebx		      ; Get argument
     ;compare ebx with '-n' to see if they're the same
@@ -16,13 +16,13 @@ _start:
 _removenl:
     mov byte [newline],0 ;Removes the newline character from memory
     pop	ebx		      ; Skips to the next argument
-    dec ebp         ; decrease the number of arguments left
+    dec esi         ; decrease the number of arguments left
 
 _main:
-    cmp ebp, 1      ; If there is only one argument do nothing, just skip to the end
+    cmp esi, 1      ; If there is only one argument do nothing, just skip to the end
     je _exit
     ;strlen(edi)
-    dec ebp         ; Decrease the number of arguments left
+    dec esi         ; Decrease the number of arguments left
     mov edi, ebx
     ;Get the string length for string edi and put it in eax
     push	edi
@@ -35,7 +35,7 @@ _main:
   	pop	edi
   	lea	eax, [ecx-1]
     mov byte [ebx+eax],32 ; Put a space in between each argument to replace the string terminator
-    cmp ebp,1       ; Here we need to add a conditional to check if we've processed all arguments
+    cmp esi,1       ; Here we need to add a conditional to check if we've processed all arguments
     jne _main        ; If this is the last argument exit
 
 
