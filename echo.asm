@@ -40,15 +40,13 @@ _main:
 
 
 _exit:
+    ;Append a newline to the end if we have a newline
+    mov edi,[newline]
+    mov [ebx+eax],edi
+    inc eax ;Increase the length by one
     ; Print the string
     mov edx,eax     ; String length
     mov ecx,ebx     ; String
-    mov ebx,1       ; stdout
-    mov eax,4       ; sys_write
-    int 0x80        ; Kernel interrupt
-    ;Print new line
-    mov edx,1
-    mov ecx,newline ; New line
     mov ebx,1       ; stdout
     mov eax,4       ; sys_write
     int 0x80        ; Kernel interrupt
