@@ -34,27 +34,18 @@ _main:
   	not	ecx
   	pop	edi
   	lea	eax, [ecx-1]
+    mov byte [ebx+eax],32 ; Put a space in between each argument to replace the string terminator
+    cmp ebp,1       ; Here we need to add a conditional to check if we've processed all arguments
+    jne _main        ; If this is the last argument exit
 
-    ;Print the string
+
+_exit:
+    ; Print the string
     mov edx,eax     ; String length
     mov ecx,ebx     ; String
     mov ebx,1       ; stdout
     mov eax,4       ; sys_write
     int 0x80        ; Kernel interrupt
-    cmp ebp,1       ; Here we need to add a conditional to check if either the stack is empty or we've processed all arguments
-    je _exit        ; If this is the last argument exit
-
-    mov edx,1
-    mov ecx,space   ; Empty space
-    mov ebx,1       ; stdout
-    mov eax,4       ; sys_write
-    int 0x80        ; Kernel interrupt
-
-    pop	ebx		      ; Get argument
-    jmp _main
-
-
-_exit:
     ;Print new line
     mov edx,1
     mov ecx,newline ; New line
