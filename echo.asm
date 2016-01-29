@@ -5,6 +5,8 @@ _start:
     pop	esi	        ; Get the number of arguments
     pop	ebx	        ; Pop the program name, we don't need this so we'll just overwrite it
 
+    mov edx,0xA     ;The newline character
+
     cmp esi, 1      ; If there are no arguments just exit
     je _exit
     pop	ebx		      ; Get argument
@@ -14,7 +16,7 @@ _start:
     cmp edi,0x6e2d ;Check for '-n'
     jne _main
 _removenl:
-    mov byte [newline],0 ;Removes the newline character from memory
+    mov edx,0 ;Removes the newline character from memory
     pop	ebx		      ; Skips to the next argument
     dec esi         ; decrease the number of arguments left
 
@@ -41,8 +43,7 @@ _main:
 
 _exit:
     ;Append a newline to the end if we have a newline
-    mov edi,[newline]
-    mov [ebx+eax],edi
+    mov [ebx+eax],edx
     inc eax ;Increase the length by one
     ; Print the string
     mov edx,eax     ; String length
@@ -55,6 +56,3 @@ _exit:
     mov eax, 1
     xor ebx, ebx
     int 0x80
-
-section .data
-  newline DB 0xA
