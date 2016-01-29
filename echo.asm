@@ -9,11 +9,11 @@ _start:
     je _exit
     pop	ebx		      ; Get argument
     ;compare ebx with '-n' to see if they're the same
-    cld
-    mov  ecx,2      ; '-n' will always be 2 characters long
-    lea  esi,[nlarg]
-    lea  edi, [ebx]
-    repe cmpsb
+    mov di, [ebx]
+    mov ah, [ebx+2]
+    cmp di,0x6e2d ;Check for '-n'
+    jne _main
+    cmp ah,0  ;check for terminator
     jne _main
 _removenl:
     mov byte [newline],0 ;Removes the newline character from memory
