@@ -30,7 +30,6 @@ _main:
   	mov	edi, [esp]
   	not	ecx
   	xor	al, al
-  	cld
     repne scasb
   	not	ecx
   	pop	edi
