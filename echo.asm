@@ -7,8 +7,8 @@ _start:
 
     mov edx,0xA     ;The newline character
 
-    cmp esi, 1      ; If there are no arguments just exit
-    je _exit
+    dec esi      ; If there are no arguments just exit
+    jz _exit
     pop	ebx		      ; Get argument
     ;compare ebx with '-n' to see if they're the same
     mov edi, [ebx]
@@ -19,12 +19,10 @@ _removenl:
     mov edx,0 ;Removes the newline character from memory
     pop	ebx		      ; Skips to the next argument
     dec esi         ; decrease the number of arguments left
+    jz _exit
 
 _main:
-    cmp esi, 1      ; If there is only one argument do nothing, just skip to the end
-    je _exit
     ;strlen(edi)
-    dec esi         ; Decrease the number of arguments left
     mov edi, ebx
     ;Get the string length for string edi and put it in eax
     push	edi
@@ -37,8 +35,8 @@ _main:
   	pop	edi
   	lea	eax, [ecx-1]
     mov byte [ebx+eax],32 ; Put a space in between each argument to replace the string terminator
-    cmp esi,1       ; Here we need to add a conditional to check if we've processed all arguments
-    jne _main        ; If this is the last argument exit
+    dec esi          ; Decrease arg count
+    jnz _main        ; If this is the last argument exit
 
 
 _exit:
