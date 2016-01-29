@@ -9,11 +9,9 @@ _start:
     je _exit
     pop	ebx		      ; Get argument
     ;compare ebx with '-n' to see if they're the same
-    mov di, [ebx]
-    mov ah, [ebx+2]
-    cmp di,0x6e2d ;Check for '-n'
-    jne _main
-    cmp ah,0  ;check for terminator
+    mov edi, [ebx]
+    and edi, 0xFFFFFF ; Mask the bits we don't need
+    cmp edi,0x6e2d ;Check for '-n'
     jne _main
 _removenl:
     mov byte [newline],0 ;Removes the newline character from memory
