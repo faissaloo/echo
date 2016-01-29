@@ -58,5 +58,3 @@ _exit:
 
 section .data
   newline DB 0xA
-  nlarg DB "-n"
-  space DB " "
