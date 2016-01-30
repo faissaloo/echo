@@ -5,10 +5,10 @@ _start:
     pop	esi	        ; Get the number of arguments
     pop	ebx	        ; Pop the program name, we don't need this so we'll just overwrite it
 
-    mov edx,0xA     ;The newline character
+    mov dx,0xA     ;The newline character
 
     dec esi      ; If there are no arguments just exit
-    jz _exit
+
     pop	ebx		      ; Get argument
     ;compare ebx with '-n' to see if they're the same
     mov edi, [ebx]
@@ -16,7 +16,7 @@ _start:
     cmp edi,0x6e2d ;Check for '-n'
     jne _main
 _removenl:
-    mov edx,0 ;Removes the newline character from memory
+    xor dx,dx ;Removes the newline character from memory
     dec esi
     jz _exit
     pop ebx
@@ -26,12 +26,11 @@ _main:
     ;Yes, that's right, I'm using *that* method because it's REALLY fast
     mov edi, ebx
     ;Get the string length for string edi and put it in eax
-    push	edi
   	xor	ecx, ecx
-  	mov	edi, [esp]
-  	xor	al, al
-_s: scasw
+_s:
+    scasw ;Get the next word
     mov ecx,[edi]
+    ; Wooo magical numbers!
     sub ecx, 0x01010101
     and ecx, 0x80808080
     xor ecx, 0  ;compare ecx with 0
@@ -40,20 +39,15 @@ _s: scasw
     cmp ecx, 0x80
     je _cont
 
-    shr ecx, 8 ; "NEXT!"
     inc edi
-    cmp ecx, 0x80
+    cmp ecx, 0x8000
     je _cont
 
-    shr ecx, 8
     inc edi
-    cmp ecx, 0x80
+    cmp ecx, 0x800000
     je _cont
 
-    shr ecx, 8
     inc edi
-    cmp ecx, 0x80
-    je _cont
 _cont:
     mov ecx,ebx ;Save the original starting point in ecx, we don't want to modify ebx
     sub ecx, edi  ;Get the difference
@@ -65,7 +59,7 @@ _cont:
 
 _exit:
     ;Append a newline to the end if we have a newline
-    mov [ebx+ecx],edx
+    mov [edi],dx
     inc ecx ;Increase the length by one
     ; Print the string
     mov edx,ecx     ; String length
