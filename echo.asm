@@ -6,8 +6,8 @@ _start:
     pop	ebx	        ; Pop the program name, we don't need this so we'll just overwrite it
 
     mov dx,0xA     ;The newline character
-
     dec esi      ; If there are no arguments just exit
+    jz _exit
 
     pop	ebx		      ; Get argument
     ;compare ebx with '-n' to see if they're the same
@@ -59,7 +59,7 @@ _cont:
 
 _exit:
     ;Append a newline to the end if we have a newline
-    mov [edi],dx
+    mov [ebx+ecx],dx
     inc ecx ;Increase the length by one
     ; Print the string
     mov edx,ecx     ; String length
