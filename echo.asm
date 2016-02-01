@@ -31,6 +31,7 @@ _s:
     scasw ;Get the next word
     mov ecx,[edi]
     ; Wooo magical numbers!
+    and ecx, 0x7F7F7F7F
     sub ecx, 0x01010101
     and ecx, 0x80808080
     xor ecx, 0  ;compare ecx with 0
