@@ -26,10 +26,10 @@ _main:
     ;Yes, that's right, I'm using *that* method because it's REALLY fast
     mov edi, ebx
     ;Get the string length for string edi and put it in eax
-  	xor	ecx, ecx
+    xor	ecx, ecx
 _s:
-    scasw ;Get the next word
     mov ecx,[edi]
+    add edi,3     ;Move to the next 'word'+1 (because we'll be decreasing from it)
     ; Wooo magical numbers!
     and ecx, 0x7F7F7F7F
     sub ecx, 0x01010101
@@ -37,18 +37,21 @@ _s:
     xor ecx, 0  ;compare ecx with 0
     jz _s ;If none of them were zeros loops back to s
     ;otherwise let's track down the one that was zero which will be represented a 0x80
-    cmp ecx, 0x80
-    je _cont
+    test ecx, 0x80000000
+    jne _cont
 
-    inc edi
-    cmp ecx, 0x8000
-    je _cont
 
-    inc edi
-    cmp ecx, 0x800000
-    je _cont
+    dec edi
+    test ecx, 0x800000
+    jne _cont
 
-    inc edi
+
+    dec edi
+    test ecx, 0x8000
+    jne _cont
+
+    dec edi
+
 _cont:
     mov ecx,ebx ;Save the original starting point in ecx, we don't want to modify ebx
     sub ecx, edi  ;Get the difference
