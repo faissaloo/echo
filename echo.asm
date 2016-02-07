@@ -26,7 +26,6 @@ _main:
     ;Yes, that's right, I'm using *that* method because it's REALLY fast
     mov edi, ebx
     ;Get the string length for string edi and put it in eax
-    xor	ecx, ecx
 _s:
     mov ecx,[edi]
     add edi,3     ;Move to the next 'word'+1 (because we'll be decreasing from it)
