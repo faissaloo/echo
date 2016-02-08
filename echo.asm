@@ -28,7 +28,7 @@ _main:
     ;Get the string length for string edi and put it in eax
 _s:
     mov ecx,[edi]
-    add edi,3     ;Move to the next 'word'+1 (because we'll be decreasing from it)
+    add edi,2     ;Move to the next 'word'+1 (because we'll be decreasing from it)
     ; Wooo magical numbers!
     and ecx, 0x7F7F7F7F
     sub ecx, 0x01010101
@@ -36,20 +36,21 @@ _s:
     xor ecx, 0  ;compare ecx with 0
     jz _s ;If none of them were zeros loops back to s
     ;otherwise let's track down the one that was zero which will be represented a 0x80
-    test ecx, 0x80000000
-    jne _cont
+    sub edi, 2      ;Remove the 'add edi, 2' that we did before
+    test ecx, 0x80
+    jnz _cont
 
 
-    dec edi
-    test ecx, 0x800000
-    jne _cont
-
-
-    dec edi
+    inc edi
     test ecx, 0x8000
-    jne _cont
+    jnz _cont
 
-    dec edi
+
+    inc edi
+    test ecx, 0x800000
+    jnz _cont
+
+    inc edi
 
 _cont:
     mov ecx,ebx ;Save the original starting point in ecx, we don't want to modify ebx
