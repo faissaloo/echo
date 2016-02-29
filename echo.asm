@@ -54,19 +54,18 @@ _s:
 
 _cont:
     mov ecx,ebx ;Save the original starting point in ecx, we don't want to modify ebx
-    sub ecx, edi  ;Get the difference
-    neg ecx ;It's going to be negative so make it positive
-    mov byte [ebx+ecx],32 ; Put a space in between each argument to replace the string terminator
+    sub edi, ecx  ;Get the difference
+    mov byte [ebx+edi],32 ; Put a space in between each argument to replace the string terminator
     dec esi          ; Decrease arg count
     jnz _main        ; If this is the last argument exit
 
 
 _exit:
     ;Append a newline to the end if we have a newline
-    mov [ebx+ecx],dx
-    inc ecx ;Increase the length by one
+    mov [ebx+edi],dx
+    inc edi ;Increase the length by one
     ; Print the string
-    mov edx,ecx     ; String length
+    mov edx,edi     ; String length
     mov ecx,ebx     ; String
     mov ebx,1       ; stdout
     mov eax,4       ; sys_write
