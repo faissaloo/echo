@@ -26,6 +26,7 @@ _main:
     ;Here we have an assembly implementation of glibc's strlen.c
     ;Yes, that's right, I'm using *that* method because it's REALLY fast
     mov edx, ecx
+    mov ebx, 0x80808080 ;Store the himagic in ebx so we can speed things up a little
     ;Get the string length for string edx and put it in eax
 _s:
     mov edi,[edx]
@@ -33,7 +34,7 @@ _s:
     ; Wooo magical numbers!
     and edi, 0x7F7F7F7F
     sub edi, 0x01010101
-    and edi, 0x80808080
+    and edi, ebx
     xor edi, 0  ;compare edi with 0
     jz _s ;If none of them were zeros loops back to s
     ;otherwise let's track down the one that was zero which will be represented a 0x80
