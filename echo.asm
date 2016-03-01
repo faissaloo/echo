@@ -3,70 +3,72 @@ section .text
 
 _start:
     pop	esi	        ; Get the number of arguments
-    pop	ebx	        ; Pop the program name, we don't need this so we'll just overwrite it
+    pop	ecx	        ; Pop the program name, we don't need this so we'll just overwrite it
 
-    mov dx,0xA     ;The newline character
+    mov ah,0xA     ;The newline character
     dec esi      ; If there are no arguments just exit
     jz _exit
 
-    pop	ebx		      ; Get argument
-    ;compare ebx with '-n' to see if they're the same
-    mov edi, [ebx]
-    and edi, 0xFFFFFF ; Mask the bits we don't need
-    cmp edi,0x6e2d ;Check for '-n'
+    pop	ecx		      ; Get argument
+    ;compare ecx with '-n' to see if they're the same
+    mov edx, [ecx]
+    and edx, 0xFFFFFF ; Mask the bits we don't need
+    cmp edx,0x6e2d ;Check for '-n'
     jne _main
 _removenl:
-    xor dx,dx ;Removes the newline character from memory
+    xor ah,ah ;Removes the newline character from memory
     dec esi
     jz _exit
-    pop ebx
+    pop ecx
 _main:
-    ;strlen(edi)
+    ;strlen(edx)
     ;Here we have an assembly implementation of glibc's strlen.c
     ;Yes, that's right, I'm using *that* method because it's REALLY fast
-    mov edi, ebx
-    ;Get the string length for string edi and put it in eax
+    mov edx, ecx
+    ;Get the string length for string edx and put it in eax
 _s:
-    mov ecx,[edi]
-    add edi,4     ;Move to the next 'double word' (because we'll be decreasing from it)
+    mov edi,[edx]
+    add edx,4     ;Move to the next 'double word' (because we'll be decreasing from it)
     ; Wooo magical numbers!
-    and ecx, 0x7F7F7F7F
-    sub ecx, 0x01010101
-    and ecx, 0x80808080
-    xor ecx, 0  ;compare ecx with 0
+    and edi, 0x7F7F7F7F
+    sub edi, 0x01010101
+    and edi, 0x80808080
+    xor edi, 0  ;compare edi with 0
     jz _s ;If none of them were zeros loops back to s
     ;otherwise let's track down the one that was zero which will be represented a 0x80
-    sub edi, 4      ;Remove the 'add edi, 2' that we did before
-    test ecx, 0x80
+    sub edx, 4      ;Remove the 'add edx, 2' that we did before
+    test edi, 0x80
     jnz _cont
 
 
-    inc edi
-    test ecx, 0x8000
+    inc edx
+    test edi, 0x8000
     jnz _cont
 
 
-    inc edi
-    test ecx, 0x800000
+    inc edx
+    test edi, 0x800000
     jnz _cont
 
-    inc edi
+    inc edx
 
 _cont:
-    mov ecx,ebx ;Save the original starting point in ecx, we don't want to modify ebx
-    sub edi, ecx  ;Get the difference
-    mov byte [ebx+edi],32 ; Put a space in between each argument to replace the string terminator
+    mov edi,ecx ;Save the original starting point in edi, we don't want to modify ecx
+    sub edx, edi  ;Get the difference
+    mov byte [ecx+edx],32 ; Put a space in between each argument to replace the string terminator
     dec esi          ; Decrease arg count
     jnz _main        ; If this is the last argument exit
 
 
 _exit:
     ;Append a newline to the end if we have a newline
-    mov [ebx+edi],dx
-    inc edi ;Increase the length by one
+    mov [ecx+edx],ah
+    inc edx ;Increase the length by one
     ; Print the string
-    mov edx,edi     ; String length
-    mov ecx,ebx     ; String
+    ;String length should already be in edx
+    ;String should already be in ecx
+    ;mov edx,edx     ; String length
+    ;mov ecx,ecx     ; String
     mov ebx,1       ; stdout
     mov eax,4       ; sys_write
     int 0x80        ; Kernel interrupt
