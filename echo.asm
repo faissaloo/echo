@@ -17,6 +17,7 @@ _start:
     jne _main
 _removenl:
     xor ah,ah ;Removes the newline character from memory
+    xor edx,edx ;Set edx back to zero from before to prevent segfaults
     dec esi
     jz _exit
     pop ecx
