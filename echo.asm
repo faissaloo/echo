@@ -5,12 +5,12 @@ _start:
     pop	esi	        ; Get the number of arguments
     pop	ecx	        ; Pop the program name, we don't need this so we'll just overwrite it
 
-    mov ah,0xA     ;The newline character
     dec esi      ; If there are no arguments just exit
     jz _exit
 
     pop	ecx		      ; Get argument
     ;compare ecx with '-n' to see if they're the same
+    mov ah,0xA     ;The newline character
     mov edx, [ecx]
     and edx, 0xFFFFFF ; Mask the bits we don't need
     cmp edx,0x6e2d ;Check for '-n'
