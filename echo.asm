@@ -39,20 +39,26 @@ _s:
     jz _s ;If none of them were zeros loops back to s
     ;otherwise let's track down the one that was zero which will be represented a 0x80
     sub edx, 4      ;Remove the 'add edx, 2' that we did before
-    test edi, 0x80
-    jnz _cont
+    ; mov edx again, so that we can test the actual value, since our cool magic
+    ; number stuff that we did before destroys edx, which means that character
+    ; 128 will cause misfires
+    mov edi,[edx]
+    test edi, 0xFF
+    jz _cont
 
 
     inc edx
-    test edi, 0x8000
-    jnz _cont
+    test edi, 0xFF00
+    jz _cont
 
 
     inc edx
-    test edi, 0x800000
-    jnz _cont
+    test edi, 0xFF0000
+    jz _cont
 
     inc edx
+    test edi, 0xFF000000
+    jnz _s ;If it was a misfire, go back and continue
 
 _cont:
     mov edi,ecx ;Save the original starting point in edi, we don't want to modify ecx
