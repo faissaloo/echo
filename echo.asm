@@ -79,9 +79,19 @@ _exit:
     ;mov ecx,ecx     ; String
     mov ebx,1       ; stdout
     mov eax,4       ; sys_write
-    int 0x80        ; Kernel interrupt
-
+    push _sysentercont
+    push ecx
+    push edx
+    push ebp
+    mov ebp, esp
+    sysenter        ; Kernel interrupt
+_sysentercont: ;To continue after sysenter
     ;Exit with code 0
     mov eax, 1
     xor ebx, ebx
-    int 0x80
+    push _sysentercont
+    push ecx
+    push edx
+    push ebp
+    mov ebp, esp
+    sysenter

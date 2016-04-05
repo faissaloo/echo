@@ -20,7 +20,7 @@
 nasm -f elf echo.asm
 ld -o echo echo.o -melf_i386
 rm echo.o
-strip -v echo #Remove .bss and .data because we won't need it in the main executable, this saves more space
+strip -v echo
 echo
 echo " Done building, the file 'echo' is your executable"
 echo " $(ls -l  ./echo | cut -d ' ' -f5)" bytes
