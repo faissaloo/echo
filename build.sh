@@ -1,6 +1,26 @@
 #!/bin/bash
+##################################MIT LICENCE###################################
+#Permission is hereby granted, free of charge, to any person obtaining a copy of
+#build.sh and associated documentation files (the "Software"), to deal in
+#build.sh without restriction, including without limitation the rights to
+#use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+#the Software, and to permit persons to whom build.sh is furnished to do so,
+#subject to the following conditions:
+#
+#The above copyright notice and this permission notice shall be included in all
+#copies or substantial portions of the Software.
+#
+#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+#FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+#COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+#IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+#CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+################################################################################
 nasm -f elf echo.asm
 ld -o echo echo.o -melf_i386
 rm echo.o
-strip echo
-echo "Done building, the file 'echo' is your executable"
+strip -v echo #Remove .bss and .data because we won't need it in the main executable, this saves more space
+echo
+echo " Done building, the file 'echo' is your executable"
+echo " $(ls -l  ./echo | cut -d ' ' -f5)" bytes
