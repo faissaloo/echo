@@ -10,10 +10,10 @@ _start:
 
     pop	ecx		      ; Get argument
     ;compare ecx with '-n' to see if they're the same
-    mov ah,0xA     ;The newline character
+    mov ah,`\n`     ;The newline character
     mov edx, [ecx]
     and edx, 0xFFFFFF ; Mask the bits we don't need
-    cmp edx,0x6e2d ;Check for '-n'
+    cmp edx,`-n\0`;Check for '-n'
     jne _main
 _removenl:
     xor ah,ah ;Removes the newline character from memory
