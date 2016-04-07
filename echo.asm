@@ -85,13 +85,9 @@ _exit:
     push ebp
     mov ebp, esp
     sysenter        ; Kernel interrupt
-_sysentercont: ;To continue after sysenter
+_sysentercont:
     ;Exit with code 0
     mov eax, 1
     xor ebx, ebx
-    push _sysentercont
-    push ecx
-    push edx
-    push ebp
     mov ebp, esp
     sysenter
