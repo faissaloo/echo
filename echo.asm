@@ -3,12 +3,13 @@ section .text
 
 _start:
     pop	esi	        ; Get the number of arguments
+
+    dec esi      ; If there are no arguments just exit instantly
+    jz _noArgsExit
+
     pop	ecx	        ; Pop the program name, we don't need this so we'll just overwrite it
 
-    dec esi      ; If there are no arguments just exit
-    jz _exit
-
-    pop	ecx		      ; Get argument
+    pop	ecx		      ; Get first argument
     ;compare ecx with '-n' to see if they're the same
     mov ah,`\n`     ;The newline character
     mov edx, [ecx]
@@ -87,7 +88,8 @@ _exit:
     sysenter        ; Kernel interrupt
 _sysentercont:
     ;Exit with code 0
-    mov eax, 1
     xor ebx, ebx
+_noArgsExit:
+    mov eax, 1
     mov ebp, esp
     sysenter
