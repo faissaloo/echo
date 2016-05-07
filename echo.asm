@@ -10,6 +10,10 @@ _start:
     pop	ecx	        ; Pop the program name, we don't need this so we'll just overwrite it
 
     pop	ecx		      ; Get first argument
+    mov ebx, 0x80808080 ;Store the himagic in ebx so we can speed things up a little
+    ;Listen: I don't give a damn if you don't like the fact that I'm using a non
+    ;general purpose register for this, it doesn't get used and it's much faster
+    mov ebp, 0x7F7F7F7F
     ;compare ecx with '-n' to see if they're the same
     mov ah,`\n`     ;The newline character
     mov edx, [ecx]
@@ -27,13 +31,12 @@ _main:
     ;Here we have an assembly implementation of glibc's strlen.c
     ;Yes, that's right, I'm using *that* method because it's REALLY fast
     mov edx, ecx
-    mov ebx, 0x80808080 ;Store the himagic in ebx so we can speed things up a little
     ;Get the string length for string edx and put it in eax
 _s:
     mov edi,[edx]
     add edx,4     ;Move to the next 'double word' (because we'll be decreasing from it)
     ; Wooo magical numbers!
-    and edi, 0x7F7F7F7F
+    and edi, ebp
     sub edi, 0x01010101
     and edi, ebx
     xor edi, 0  ;compare edi with 0
