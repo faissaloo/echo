@@ -17,10 +17,7 @@
 #IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 #CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ################################################################################
-nasm -f elf echo.asm
-ld -o echo echo.o -melf_i386
-rm echo.o
-strip -v echo
+nasm -f bin echo.asm
 echo
 echo " Done building, the file 'echo' is your executable"
 echo " $(ls -l  ./echo | cut -d ' ' -f5)" bytes
