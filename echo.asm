@@ -52,14 +52,13 @@ _start:
     jne _main
 _removenl:
     xchg edx, eax       ; Removes the newline character from memory
-    push edi
     dec ebx
     jz _exit
     pop edi
     pop edi
 _main:
     ;strlen(edi)
-    push edi
+    mov ecx, edi
     ;Get the string length for string edi and put it in edi
     db 0x3c             ;Mask scasd on first pass
 _s:
@@ -107,7 +106,7 @@ _exit:
     ;Append a newline to the end if we have a newline
     stosb   ;and increase the length by one
     ; Print the string
-    pop ecx          ; String
+    ;String already in ecx because we moved it in _main
     mov edx, edi
     sub edx, ecx     ; String length
     inc ebx          ; stdout
