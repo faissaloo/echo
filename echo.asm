@@ -67,20 +67,28 @@ _s:
 _sit:
     mov edx,[edi]
     ; Wooo magical numbers!
+    and edx, 0x7F7F7F7F
     sub edx, 0x01010101
-    and edx, 0x80808080  
+    and edx, 0x80808080
     jz _s ;If none of them were zeros loops back to s
-    ;otherwise let's track down the one that was zero which will be represented a 0x80
+
+    mov edx,[edi] ;restore edx so we can check if it was actually 0 or if we've
+                  ;misfired (which happens only with character 128)
     test dl, dl
-    jnz _cont
+    jz _cont
 
     test dh, dh
-    jnz _cont1
+    jz _cont1
 
-    bswap edx
+    bswap edx ;swap the bytes around so we can use segment registers to check
+              ;the value
     test dh, dh
-    jnz _cont2
+    jz _cont2
 
+    test dl, dl
+    jnz _sit
+
+_cont3:
     inc edi
 
 _cont2:
