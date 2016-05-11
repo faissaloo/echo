@@ -86,7 +86,7 @@ _sit:
     jz _cont2
 
     test dl, dl
-    jnz _sit
+    jnz _s
 
 _cont3:
     inc edi
