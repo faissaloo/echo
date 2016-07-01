@@ -55,7 +55,6 @@ _removenl:
     dec ebx
     jz _exit
     pop edi
-    pop edi
 _main:
     ;strlen(edi)
     mov ecx, edi
