@@ -34,93 +34,57 @@ phdr:                                                 ; Elf32_Phdr
 phdrsize      equ     $ - phdr
 
 _start:
-    push `\n`     ;The newline character
-    pop eax
-    pop	ebx	        ; Get the number of arguments
-
-    dec ebx      ; If there are no arguments just exit instantly
+    pop ebx             ;Get argument count
+    dec ebx             ;If there are no arguments just exit instantly
     jz _noArgsExit
+    
+    mov al, `\n`        ;Store the newline character
 
-    pop	ecx	        ; Pop the program name, we don't need this so we'll just overwrite it
-
-    pop	edi		; Get first argument
+    add esp, 4          ;Remove program name from the stack, we don't need it
+    pop	ecx	        ;Get first argument
+    
     ;compare edx with '-n' to see if they're the same
-    mov edx, [edi]
-    bswap edx
-    xor dl, dl          ; Mask the bits we don't need
-    sub edx,`\0\0n-`;Check for '-n'
+    ;If we take 1 away from ecx we'll be assured
+    ;that before and after the -n there will be a null terminator
+    ;no need for bswap or shift rubbish
+    cmp dword [ecx-1],`\0-n\0`;Check for '-n'
     jne _main
 _removenl:
-    xchg edx, eax       ; Removes the newline character from memory
+    xor al, al       ; Removes the newline character from memory
     dec ebx
-    jz _exit
-    pop edi
+    jz _noArgsExit
+    pop ecx ;prepares the first real argument for echo
 _main:
-    ;strlen(edi)
-    mov ecx, edi
-    ;Get the string length for string edi and put it in edi
-    db 0x3c             ;Mask scasd on first pass
-_s:
-    scasd               ;Move to the next 'double word'
-_sit:
-    mov edx,[edi]
-    ; Wooo magical numbers!
-    and edx, 0x7F7F7F7F
-    sub edx, 0x01010101
-    and edx, 0x80808080
-    jz _s ;If none of them were zeros loops back to s
+    dec ebx
+    jz _final_arg ;check if we're already on the final argument
+    _most_args:
+        pop edx
+        mov byte [edx-1], ` `
+        dec ebx
+        jnz _most_args
 
-    mov edx,[edi] ;restore edx so we can check if it was actually 0 or if we've
-                  ;misfired (which happens only with character 128)
-    test dl, dl
-    jz _cont
-
-    test dh, dh
-    jz _cont1
-
-    bswap edx ;swap the bytes around so we can use segment registers to check
-              ;the value
-    test dh, dh
-    jz _cont2
-
-    test dl, dl
-    jnz _s
-
-_cont3:
-    inc edi
-
-_cont2:
-    inc edi
-
-_cont1:
-    inc edi
-
-_cont:
-    mov byte [edi], 32 ; Put a space in between each argument to replace the string terminator
-    dec ebx          ; Decrease arg count
-    jnz _sit         ; If this is the last argument exit
-
-
+    _final_arg: ;only get strlen for the final argument
+	;Remove the null between argv and envp and get the first bit of 
+	;envp, basically combining add esp, 4 and pop edx.
+	;We can do this because we no longer need to keep track of the 
+	;stack after this.
+	mov edx, [esp+4]
 _exit:
     ;Append a newline to the end if we have a newline
-    stosb   ;and increase the length by one
     ; Print the string
-    ;String already in ecx because we moved it in _main
-    mov edx, edi
+    mov [edx], al
+    inc edx
+    ;String pointer is already in ecx
     sub edx, ecx     ; String length
     inc ebx          ; stdout
-    mov al,4         ; sys_write
+    mov al,4         ; sys_write, only need to write to al because only thing in that register is newline, which is 8-bits and no longer needed
     push _sysentercont
-    push ecx
-    push edx
-    push ebp
-    mov ebp, esp
+    lea ebp, [esp-12] ;esp-12 because we don't care what gets put in those registers after, so just use any stack garbage
     sysenter        ; Kernel interrupt
 _sysentercont:
-    ;Exit with code 0
     dec ebx
 _noArgsExit:
-    mov al, 1
+    mov eax, 1
     mov ebp, esp
     sysenter
 
