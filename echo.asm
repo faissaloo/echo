@@ -59,8 +59,8 @@ _main:
     jz _final_arg ;check if we're already on the final argument
     _most_args:
         pop edx
-        mov byte [edx-1], ` `
         dec ebx
+        mov byte [edx-1], ` `
         jnz _most_args
 
     _final_arg: ;only get strlen for the final argument
@@ -73,11 +73,11 @@ _exit:
     ;Append a newline to the end if we have a newline
     ; Print the string
     mov [edx], al
+    inc ebx          ; stdout
     inc edx
     ;String pointer is already in ecx
-    sub edx, ecx     ; String length
-    inc ebx          ; stdout
     mov al,4         ; sys_write, only need to write to al because only thing in that register is newline, which is 8-bits and no longer needed
+    sub edx, ecx     ; String length
     push _sysentercont
     lea ebp, [esp-12] ;esp-12 because we don't care what gets put in those registers after, so just use any stack garbage
     sysenter        ; Kernel interrupt
