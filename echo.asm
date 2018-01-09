@@ -50,7 +50,7 @@ _start:
     cmp dword [ecx-1],`\0-n\0`;Check for '-n'
     jne _main
 _removenl:
-    xor al, al       ; Removes the newline character from memory
+    xor eax, eax       ; Removes the newline character from memory
     dec ebx
     jz _noArgsExit
     pop ecx ;prepares the first real argument for echo
